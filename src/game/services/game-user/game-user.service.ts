@@ -60,7 +60,11 @@ export class GameUserService {
         this.users.set(newUser.id.toString(), newUser);
         this.nameToId.set(username, newUser.id);
 
-        return "User created";
+        return 'User created';
+    }
+
+    verify(id: string): boolean {
+        return this.users.has(id);
     }
 
     update(): string {

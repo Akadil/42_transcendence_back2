@@ -4,23 +4,23 @@ import { UpdatePracticeDto } from './dto/update-practice.dto';
 
 @Injectable()
 export class PracticeService {
-  create(createPracticeDto: CreatePracticeDto) {
-    return 'This action adds a new practice';
-  }
+    create(createPracticeDto: CreatePracticeDto) {
+        return 'This action adds a new practice';
+    }
 
-  findAll() {
-    return `This action returns all practice`;
-  }
+    findAll() {
+        return `This action returns all practice`;
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} practice`;
-  }
+    findOne(id: number) {
+        return `This action returns a #${id} practice`;
+    }
 
-  update(id: number, updatePracticeDto: UpdatePracticeDto) {
-    return `This action updates a #${id} practice`;
-  }
+    update(id: number, updatePracticeDto: UpdatePracticeDto) {
+        return `This action updates a #${id} practice`;
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} practice`;
-  }
+    remove(id: number) {
+        return `This action removes a #${id} practice`;
+    }
 }

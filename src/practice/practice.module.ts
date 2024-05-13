@@ -3,7 +3,7 @@ import { PracticeService } from './practice.service';
 import { PracticeController } from './practice.controller';
 
 @Module({
-  controllers: [PracticeController],
-  providers: [PracticeService],
+    controllers: [PracticeController],
+    providers: [PracticeService],
 })
 export class PracticeModule {}

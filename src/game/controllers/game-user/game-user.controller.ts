@@ -1,6 +1,16 @@
-import { Controller, Delete, Get, HttpException, Param, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+    Controller,
+    Delete,
+    Get,
+    HttpException,
+    Param,
+    Post,
+    Put,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
 import { GameUserService } from '../../services/game-user/game-user.service';
-import { SerializedGameUser } from '../../entities/game-user';
+import { GameUser, SerializedGameUser } from '../../entities/game-user';
 import { CreateGameUserDto } from '../../dtos/gameUser/create-game-user.dto';
 
 @Controller('game-user')
@@ -15,10 +25,10 @@ export class GameUserController {
     /**
      * @attention Why do I have to give an access?
      */
-    // @Get(':id')
-    // findOne(): string {
-    //     return this.gameUserService.findOneById();
-    // }
+    @Get(':id')
+    findOne(@Param('id') id: string): GameUser {
+        return this.gameUserService.findOneById(id);
+    }
 
     @Post()
     @UsePipes(ValidationPipe)
@@ -36,11 +46,11 @@ export class GameUserController {
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string ): string {
+    remove(@Param('id') id: string): string {
         try {
             return this.gameUserService.remove({
-                id, 
-                reason: "No reason provided"
+                id,
+                reason: 'No reason provided',
             });
         } catch (error) {
             throw new HttpException(error.message, 400);

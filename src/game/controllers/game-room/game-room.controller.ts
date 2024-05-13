@@ -1,6 +1,14 @@
-import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
 import { GameRoomService } from '../../services/game-room/game-room.service';
-import { CreateGameRoomDto } from '../../dtos/gameRoom/createGameRoom.dto';
+import { CreateGameRoomDto } from '../../dtos/gameRoom/create-game-room.dto';
 
 @Controller('game-room')
 export class GameRoomController {
@@ -8,7 +16,7 @@ export class GameRoomController {
 
     /**
      * Retrieve a game room by its id
-     * 
+     *
      * @todo    Should return a DTO instead of the entity
      */
     @Get(':id')

@@ -1,4 +1,5 @@
 import {
+    Body,
     Controller,
     Delete,
     Get,
@@ -32,7 +33,7 @@ export class GameUserController {
 
     @Post()
     @UsePipes(ValidationPipe)
-    create(dto: CreateGameUserDto): string {
+    async create(@Body() dto: CreateGameUserDto): Promise<{ access_token: string }> {
         try {
             return this.gameUserService.create(dto);
         } catch (error) {

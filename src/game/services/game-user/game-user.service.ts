@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { GameUser, SerializedGameUser } from '../../entities/game-user';
 import { CreateGameUser } from '../../dtos/gameUser/create-game-user.interface';
 import { DeleteGameUser } from '../../dtos/gameUser/delete-game-user.interface';
+import { JwtService } from '@nestjs/jwt';
 // import { GameUser, GameUserRole, SerializedGameUser } from 'src/game/entities/game-user';
 // import { CreateGameUser } from 'src/game/interfaces/create-game-user/create-game-user.interface';
 // import { DeleteGameUser } from 'src/game/interfaces/delete-game-user/delete-game-user.interface';
@@ -16,7 +17,7 @@ export class GameUserService {
     users: Map<string, GameUser> = new Map();
     nameToId: Map<string, string> = new Map();
 
-    constructor() {}
+    constructor(private jwtService: JwtService) {}
 
     /**
      * Retrieve all users in the game
@@ -45,7 +46,7 @@ export class GameUserService {
     /**
      * Create a new user
      */
-    create(dto: CreateGameUser): string {
+    async create(dto: CreateGameUser): Promise<{access_token: string}> {
         if (this.nameToId[dto.username]) {
             throw new Error('Username already exists');
         }
@@ -56,15 +57,27 @@ export class GameUserService {
         newUser.id = this.generateId();
         newUser.username = username;
 
+        // Create a token for the user
+        const token = await this.jwtService.signAsync({ id: newUser.id });
+
         // Save it in memory
         this.users.set(newUser.id.toString(), newUser);
         this.nameToId.set(username, newUser.id);
 
-        return 'User created';
+        return { access_token: token };
     }
 
     verify(id: string): boolean {
         return this.users.has(id);
+    }
+
+    async verifyByToken(token: string): Promise<string | null> {
+        try {
+            const { id } = await this.jwtService.verifyAsync(token);
+            return id;
+        } catch (error) {
+            return null;
+        }
     }
 
     update(): string {

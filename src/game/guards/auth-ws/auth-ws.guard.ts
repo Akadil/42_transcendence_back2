@@ -4,11 +4,9 @@ import { GameUserService } from '../../services/game-user/game-user.service';
 
 @Injectable()
 export class AuthWsGuard implements CanActivate {
-    constructor(private gameUserService: GameUserService) { }
-    
-    canActivate(
-        context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
+    constructor(private gameUserService: GameUserService) {}
+
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const client = context.switchToWs().getClient();
         const token = client.handshake?.headers?.authorization;
 
@@ -16,12 +14,20 @@ export class AuthWsGuard implements CanActivate {
             client.disconnect();
             return false;
         }
-        const id = this.gameUserService.verifyByToken(token);
+        const { id, username } = await this.gameUserService.verifyByToken(token);
         if (!id) {
             client.disconnect();
             return false;
         }
-        client.id = id;
+        if (!this.gameUserService.verify(id)) {
+            client.disconnect();
+            return false;
+        }
+        const user = {
+            id: id,
+            username: username,
+        };
+        client.user = user;
         return true;
     }
 }

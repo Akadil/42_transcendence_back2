@@ -8,6 +8,8 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { GameInterractionService } from '../../services/game-interraction/game-interraction.service';
+import { UseGuards } from '@nestjs/common';
+import { AuthWsGuard } from '../../guards/auth-ws/auth-ws.guard';
 
 /**
  * Gateway for game interraction. Handles the game process.
@@ -22,8 +24,9 @@ export class GameInterractionGateway implements OnGatewayConnection, OnGatewayDi
 
     constructor(private myService: GameInterractionService) {}
 
-    handleConnection(@ConnectedSocket() socket: Socket): any {
-        const data = this.myService.handleConnection(socket);
+    @UseGuards(AuthWsGuard)
+    handleConnection(@ConnectedSocket() socket: any): any {
+        const data = this.myService.handleConnection(socket.user.id);
 
         if (data.isValid) {
             socket.join(data.roomId);

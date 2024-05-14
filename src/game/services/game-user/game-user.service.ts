@@ -46,7 +46,7 @@ export class GameUserService {
     /**
      * Create a new user
      */
-    async create(dto: CreateGameUser): Promise<{access_token: string}> {
+    async create(dto: CreateGameUser): Promise<{ access_token: string }> {
         if (this.nameToId[dto.username]) {
             throw new Error('Username already exists');
         }
@@ -58,7 +58,10 @@ export class GameUserService {
         newUser.username = username;
 
         // Create a token for the user
-        const token = await this.jwtService.signAsync({ id: newUser.id });
+        const token = await this.jwtService.signAsync({ 
+            id: newUser.id,
+            username: newUser.username
+        });
 
         // Save it in memory
         this.users.set(newUser.id.toString(), newUser);
@@ -71,10 +74,10 @@ export class GameUserService {
         return this.users.has(id);
     }
 
-    async verifyByToken(token: string): Promise<string | null> {
+    async verifyByToken(token: string): Promise<{id: any, username: any} | null> {
         try {
-            const { id } = await this.jwtService.verifyAsync(token);
-            return id;
+            const { id, username } = await this.jwtService.verifyAsync(token);
+            return { id, username };
         } catch (error) {
             return null;
         }

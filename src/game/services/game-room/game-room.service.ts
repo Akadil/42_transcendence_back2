@@ -34,9 +34,9 @@ export class GameRoomService {
         return gameRooms;
     }
 
-    getRoomByUser(userId: string): GameRoom | null {
+    getRoomByUser(userId: string): string | null {
         if (this.userToRoom.has(userId)) {
-            return this.userToRoom.get(userId);
+            return this.userToRoom.get(userId).id;
         }
         return null;
     }

@@ -17,4 +17,16 @@ export class GameRoom {
 
     // Spectators
     spectators: string[] = [];
+
+    isPlayer(userId: string): boolean {
+        return this.leftPlayerId === userId || this.rightPlayerId === userId;
+    }
+
+    isSpectator(userId: string): boolean {
+        return this.spectators.includes(userId);
+    }
+
+    isInRoom(userId: string): boolean {
+        return this.isPlayer(userId) || this.isSpectator(userId);
+    }
 }

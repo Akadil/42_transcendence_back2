@@ -13,6 +13,7 @@ import {
 import { GameUserService } from '../../services/game-user/game-user.service';
 import { GameUser, SerializedGameUser } from '../../entities/game-user';
 import { CreateGameUserDto } from '../../dtos/gameUser/create-game-user.dto';
+import { ReturnGameUser } from '../../dtos/gameUser/return-game-user.interface';
 
 @Controller('game-user')
 export class GameUserController {
@@ -33,9 +34,10 @@ export class GameUserController {
 
     @Post()
     @UsePipes(ValidationPipe)
-    async create(@Body() dto: CreateGameUserDto): Promise<{ access_token: string }> {
+    async create(@Body() dto: CreateGameUserDto): Promise<ReturnGameUser> {
+        console.log(dto);
         try {
-            return this.gameUserService.create(dto);
+            return await this.gameUserService.create(dto);
         } catch (error) {
             throw new HttpException(error.message, 400);
         }

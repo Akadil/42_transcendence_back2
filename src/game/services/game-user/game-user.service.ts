@@ -3,6 +3,7 @@ import { GameUser, SerializedGameUser } from '../../entities/game-user';
 import { CreateGameUser } from '../../dtos/gameUser/create-game-user.interface';
 import { DeleteGameUser } from '../../dtos/gameUser/delete-game-user.interface';
 import { JwtService } from '@nestjs/jwt';
+import { ReturnGameUser } from '../../dtos/gameUser/return-game-user.interface';
 // import { GameUser, GameUserRole, SerializedGameUser } from 'src/game/entities/game-user';
 // import { CreateGameUser } from 'src/game/interfaces/create-game-user/create-game-user.interface';
 // import { DeleteGameUser } from 'src/game/interfaces/delete-game-user/delete-game-user.interface';
@@ -11,6 +12,8 @@ import { JwtService } from '@nestjs/jwt';
  * Service responsible for handling GameUser entity
  *
  * @details The users is not saved in database but in memory, because it is current users of a game
+ * 
+ * @bug     The existing username doesn't work
  */
 @Injectable()
 export class GameUserService {
@@ -46,8 +49,9 @@ export class GameUserService {
     /**
      * Create a new user
      */
-    async create(dto: CreateGameUser): Promise<{ access_token: string }> {
+    async create(dto: CreateGameUser): Promise<ReturnGameUser> {
         if (this.nameToId[dto.username]) {
+            console.log('Username already exists');
             throw new Error('Username already exists');
         }
 
@@ -59,7 +63,7 @@ export class GameUserService {
 
         // Create a token for the user
         const token = await this.jwtService.signAsync({ 
-            id: newUser.id,
+            userid: newUser.id,
             username: newUser.username
         });
 
@@ -67,7 +71,11 @@ export class GameUserService {
         this.users.set(newUser.id.toString(), newUser);
         this.nameToId.set(username, newUser.id);
 
-        return { access_token: token };
+        return { 
+            id: newUser.id,
+            username: newUser.username,
+            access_token: token, 
+        };
     }
 
     verify(id: string): boolean {

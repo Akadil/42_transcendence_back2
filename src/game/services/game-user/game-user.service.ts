@@ -12,7 +12,7 @@ import { ReturnGameUser } from '../../dtos/gameUser/return-game-user.interface';
  * Service responsible for handling GameUser entity
  *
  * @details The users is not saved in database but in memory, because it is current users of a game
- * 
+ *
  * @bug     The existing username doesn't work
  */
 @Injectable()
@@ -62,19 +62,19 @@ export class GameUserService {
         newUser.username = username;
 
         // Create a token for the user
-        const token = await this.jwtService.signAsync({ 
+        const token = await this.jwtService.signAsync({
             userid: newUser.id,
-            username: newUser.username
+            username: newUser.username,
         });
 
         // Save it in memory
         this.users.set(newUser.id.toString(), newUser);
         this.nameToId.set(username, newUser.id);
 
-        return { 
+        return {
             id: newUser.id,
             username: newUser.username,
-            access_token: token, 
+            access_token: token,
         };
     }
 
@@ -82,7 +82,7 @@ export class GameUserService {
         return this.users.has(id);
     }
 
-    async verifyByToken(token: string): Promise<{id: any, username: any} | null> {
+    async verifyByToken(token: string): Promise<{ id: any; username: any } | null> {
         try {
             const { id, username } = await this.jwtService.verifyAsync(token);
             return { id, username };

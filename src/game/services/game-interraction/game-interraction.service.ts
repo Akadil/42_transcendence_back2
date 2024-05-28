@@ -17,7 +17,7 @@ export class GameInterractionService {
 
     handleConnection(@ConnectedSocket() client: any): GameConnection {
         let response: GameConnection;
-        const roomId = this.gameRoomService.getRoomByUser(client.user.id)
+        const roomId = this.gameRoomService.getRoomByUser(client.user.id);
 
         if (roomId) {
             response.isValid = true;

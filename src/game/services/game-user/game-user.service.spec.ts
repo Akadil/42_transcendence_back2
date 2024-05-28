@@ -37,7 +37,10 @@ describe('GameUserService', () => {
 
         // Delete each user
         for (const user of users) {
-            const result = service.remove({ id: user.id, reason: 'No reason provided' });
+            const result = service.remove({
+                id: user.id,
+                reason: 'No reason provided',
+            });
             expect(result).toBe('User removed');
         }
 

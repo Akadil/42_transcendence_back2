@@ -24,4 +24,13 @@ export class AuthService {
             access_token: await this.jwtService.signAsync(payload),
         };
     }
+
+    async validate_user(username: string, password: string): Promise<any> {
+        const user = await this.userService.findOneByUsername(username);
+        if (user && user.password === password) {
+            const { password, ...result } = user;
+            return result;
+        }
+        return null;
+    }
 }

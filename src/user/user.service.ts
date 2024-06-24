@@ -2,49 +2,49 @@ import { Injectable } from '@nestjs/common';
 // import { CreateUserDto } from './dto/create-user.dto';
 // import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { CreateUser } from './interface/create-user.interface';
 
 @Injectable()
 export class UserService {
-    private readonly fakeUsers: User[] = [
+    static id = 2;
+    private fakeUsers: User[] = [
         {
-            id: 1,
+            id: 0,
             username: 'john',
             email: 'john@gmail.com',
             password: 'changeme',
+            createdAt: new Date(),
         },
         {
-            id: 2,
+            id: 1,
             username: 'chris',
             email: 'chris@gmail.com',
             password: 'changeme',
+            createdAt: new Date(),
         },
     ];
 
-    // create(createUserDto: CreateUserDto) {
-    //     console.log('createUserDto', createUserDto);
-    //     return 'This action adds a new user';
-    // }
-
-    // findAll() {
-    //     return `This action returns all user`;
-    // }
-
-    async findOneById(id: number): Promise<User | undefined> {
-        const user = this.fakeUsers.find((user) => user.id === id);
-        return user;
+    create(data: CreateUser) {
+        const newUser = {
+            id: UserService.id++,
+            ...data,
+            createdAt: new Date(),
+        };
+        this.fakeUsers.push(newUser);
+        return newUser;
     }
 
-    async findOneByUsername(username: string): Promise<User | undefined> {
-        const user = this.fakeUsers.find((user) => user.username === username);
-        return user;
+    findOneById(id: number): User | undefined {
+        return this.fakeUsers.find((user) => user.id === id);
     }
 
-    // update(id: number, updateUserDto: UpdateUserDto) {
-    //     console.log('updateUserDto', updateUserDto);
-    //     return `This action updates a #${id} user`;
-    // }
+    findOneByUsername(username: string): User | undefined {
+        return this.fakeUsers.find((user) => user.username === username);
+    }
 
-    // remove(id: number) {
-    //     return `This action removes a #${id} user`;
-    // }
+    remove(id: number) {
+        if (this.fakeUsers.find((user) => user.id === id)) {
+            this.fakeUsers = this.fakeUsers.filter((user) => user.id !== id);
+        }
+    }
 }

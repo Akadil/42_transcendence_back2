@@ -1,7 +1,5 @@
-export class User {
-    id: number;
+export interface CreateUser {
     username: string;
     email: string;
     password: string;
-    createdAt: Date;
 }

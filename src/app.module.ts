@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { GameModule } from './game/game.module';
-import { PracticeModule } from './practice/practice.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
@@ -12,7 +11,6 @@ import { ConfigModule } from '@nestjs/config';
             envFilePath: '.env',
         }),
         GameModule,
-        PracticeModule,
         UserModule,
         AuthModule,
     ],

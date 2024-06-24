@@ -7,7 +7,7 @@ import { CreateUser } from './interface/create-user.interface';
 @Injectable()
 export class UserService {
     static id = 2;
-    private fakeUsers: User[] = [
+    fakeUsers: User[] = [
         {
             id: 0,
             username: 'john',
@@ -31,7 +31,6 @@ export class UserService {
             createdAt: new Date(),
         };
         this.fakeUsers.push(newUser);
-        return newUser;
     }
 
     findOneById(id: number): User | undefined {

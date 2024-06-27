@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { SignInDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -9,14 +9,14 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
     constructor(
         private userService: UserService,
-        private jwtService: JwtService,
+        private readonly jwtService: JwtService,
     ) {}
 
     async signup(dto: SignUpDto) {
         if (this.userService.emailExists(dto.username) == true) {
-            throw new BadRequestException('Email already exists');
+            throw new ForbiddenException('Email already exists');
         } else if (this.userService.usernameExists(dto.username) == true) {
-            throw new BadRequestException('Username already exists');
+            throw new ForbiddenException('Username already exists');
         }
 
         const user = this.userService.create(dto);

@@ -10,19 +10,33 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/auth.dto';
-import { AuthGuard } from './auth.guard';
+import { SignUpDto } from './dto/signUp.dto';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) {}
 
-    @HttpCode(HttpStatus.OK)
-    @Post('login')
-    async signIn(@Body() loginDto: SignInDto) {
-        return this.authService.signIn(loginDto);
+    @Post('signup')
+    async signup(@Body() signupDto: SignUpDto) {
+        return this.authService.signup(signupDto);
     }
 
-    @UseGuards(AuthGuard)
+    @Post('login')
+    async signin(@Body() signinDto: SignInDto) {
+        return await this.authService.signIn(signinDto);
+    }
+
+    /**
+     * @attention the request type is any because the guard adds the user
+     */
+    @UseGuards(JwtAuthGuard)
+    @Post('logout')
+    async signOut(@Request() request: any) {
+        return this.authService.signOut(request.user);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get('profile')
     getProfile(@Request() request: any) {
         return request.user;

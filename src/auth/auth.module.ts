@@ -10,6 +10,7 @@ import { PassportModule } from '@nestjs/passport';
         UserModule,
         JwtModule.registerAsync({
             useFactory: async () => ({
+                global: true,
                 secret: process.env.JWT_SECRET,
                 signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
             }),
@@ -18,5 +19,6 @@ import { PassportModule } from '@nestjs/passport';
     ],
     controllers: [AuthController],
     providers: [AuthService],
+    exports: [AuthService],
 })
 export class AuthModule {}

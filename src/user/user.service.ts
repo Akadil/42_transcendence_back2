@@ -6,8 +6,9 @@ import { CreateUser } from './interface/create-user.interface';
 
 @Injectable()
 export class UserService {
-    static id = 2;
-    fakeUsers: User[] = [
+    /* ************************* Class attributes *************************** */
+    private static id = 2;
+    private fakeUsers: User[] = [
         {
             id: 0,
             username: 'john',
@@ -24,6 +25,7 @@ export class UserService {
         },
     ];
 
+    /* ************************* CRUD methods  ****************************** */
     create(data: CreateUser) {
         const newUser = {
             id: UserService.id++,
@@ -31,19 +33,29 @@ export class UserService {
             createdAt: new Date(),
         };
         this.fakeUsers.push(newUser);
+        return newUser;
     }
 
     findOneById(id: number): User | undefined {
         return this.fakeUsers.find((user) => user.id === id);
     }
 
-    findOneByUsername(username: string): User | undefined {
-        return this.fakeUsers.find((user) => user.username === username);
+    async findOneByUsername(username: string): Promise<User | undefined> {
+        return await this.fakeUsers.find((user) => user.username === username);
     }
 
     remove(id: number) {
         if (this.fakeUsers.find((user) => user.id === id)) {
             this.fakeUsers = this.fakeUsers.filter((user) => user.id !== id);
         }
+    }
+
+    /* ************************* Class helpers *************************** */
+    usernameExists(username: string): boolean {
+        return this.fakeUsers.some((user) => user.username === username);
+    }
+
+    emailExists(email: string): boolean {
+        return this.fakeUsers.some((user) => user.email === email);
     }
 }

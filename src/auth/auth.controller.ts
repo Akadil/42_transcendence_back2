@@ -7,6 +7,7 @@ import {
     Post,
     Req,
     Res,
+    UnauthorizedException,
     UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -27,7 +28,9 @@ export class AuthController {
         const result = await this.authService.signup(signupDto);
         response.cookie('access_token', result.access_token, {
             httpOnly: true,
-            secure: true,
+        });
+        response.cookie('refresh_token', result.refresh_token, {
+            httpOnly: true,
         });
     }
 
@@ -40,7 +43,9 @@ export class AuthController {
 
         response.cookie('access_token', result.access_token, {
             httpOnly: true,
-            secure: true,
+        });
+        response.cookie('refresh_token', result.refresh_token, {
+            httpOnly: true,
         });
     }
 
@@ -50,13 +55,31 @@ export class AuthController {
         @Req() request: Request,
         @Res({ passthrough: true }) response: Response,
     ) {
-        response.clearCookie('access_token');
+        response.clearCookie('access_token', { httpOnly: true });
+        response.clearCookie('refresh_token', { httpOnly: true });
         return this.authService.signOut(request.user);
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('profile')
-    getProfile(@Req() request: any) {
+    getProfile(@Req() request: Request) {
         return request.user;
+    }
+
+    @Get('refresh')
+    async refresh(
+        @Req() request: Request,
+        @Res({ passthrough: true }) response: Response,
+    ) {
+        const refreshToken = request.cookies.refresh_token;
+        if (!refreshToken) {
+            throw new UnauthorizedException('No refresh token found');
+        }
+
+        const access_token = await this.authService.refresh(refreshToken);
+
+        response.cookie('access_token', access_token, {
+            httpOnly: true,
+        });
     }
 }

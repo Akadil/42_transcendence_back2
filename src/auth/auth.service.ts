@@ -7,6 +7,9 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+    // user.id -> refresh_token
+    refresh_tokens = new Map<string, string>();
+
     constructor(
         private userService: UserService,
         private jwtService: JwtService,
@@ -22,7 +25,12 @@ export class AuthService {
         const user = this.userService.create(dto);
         const payload = { sub: user.id, username: user.username };
         return {
-            access_token: await this.jwtService.signAsync(payload),
+            access_token: await this.jwtService.signAsync(payload, {
+                expiresIn: '15m',
+            }),
+            refresh_token: await this.jwtService.signAsync(payload, {
+                expiresIn: '2d',
+            }),
         };
     }
 
@@ -34,7 +42,12 @@ export class AuthService {
         }
         const payload = { sub: user.id, username: user.username };
         return {
-            access_token: await this.jwtService.signAsync(payload),
+            access_token: await this.jwtService.signAsync(payload, {
+                expiresIn: '15m',
+            }),
+            refresh_token: await this.jwtService.signAsync(payload, {
+                expiresIn: '2d',
+            }),
         };
     }
 
@@ -43,7 +56,33 @@ export class AuthService {
         return "Do me a favor and don't come back!";
     }
 
-    refresh(user: any) {
-        return "Nope, you're still not welcome!";
+    async refresh(refreshToken: string): Promise<string> {
+        // Get the user from the refresh token
+        let payload: any;
+        try {
+            payload = await this.jwtService.verifyAsync(refreshToken, {
+                secret: process.env.secret,
+            });
+        } catch {
+            throw new UnauthorizedException('Invalid token');
+        }
+
+        // Check if the refresh token is valid
+        // const storedToken = this.refresh_tokens.get(payload.sub);
+        // if (storedToken !== refreshToken) {
+        //     throw new UnauthorizedException('Invalid token');
+        // }
+
+        // Generate a new access token
+        const accessToken = await this.jwtService.signAsync(
+            {
+                sub: payload.sub,
+                username: payload.username,
+            },
+            {
+                expiresIn: '15m',
+            },
+        );
+        return accessToken;
     }
 }

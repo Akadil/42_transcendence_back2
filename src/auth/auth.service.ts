@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
     constructor(
         private userService: UserService,
-        private readonly jwtService: JwtService,
+        private jwtService: JwtService,
     ) {}
 
     async signup(dto: SignUpDto) {
@@ -39,6 +39,7 @@ export class AuthService {
     }
 
     signOut(user: any) {
+        // Remove the token from cookies in the front
         return "Do me a favor and don't come back!";
     }
 

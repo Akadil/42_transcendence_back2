@@ -6,6 +6,7 @@ import { GameRoomService } from './services/game-room/game-room.service';
 import { GameInterractionGateway } from './gateways/game-interraction/game-interraction.gateway';
 import { GameInterractionService } from './services/game-interraction/game-interraction.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { GameInfoController } from './controllers/game-info/game-info.controller';
 
 @Module({
     imports: [
@@ -15,7 +16,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
             signOptions: { expiresIn: '2h' },
         }),
     ],
-    controllers: [GameUserController, GameRoomController],
+    controllers: [GameUserController, GameRoomController, GameInfoController],
     providers: [
         GameUserService,
         GameRoomService,

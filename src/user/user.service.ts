@@ -36,8 +36,8 @@ export class UserService {
         return newUser;
     }
 
-    findOneById(id: number): User | undefined {
-        return this.fakeUsers.find((user) => user.id === id);
+    async findOneById(id: string): Promise<User | undefined> {
+        return await this.fakeUsers.find((user) => user.id === id);
     }
 
     async findOneByUsername(username: string): Promise<User | undefined> {
